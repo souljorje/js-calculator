@@ -1,2 +1,45 @@
 extends _template.pug
 
+block body
+    +b.calculator
+        +e.screen
+        +e.buttons
+            +b.calc-btn-wrap
+                +b.BUTTON.calc-btn._c_pink._s_wide C
+            +b.calc-btn-wrap._disabled
+                +b.BUTTON.calc-btn(disabled) ∞
+            +b.calc-btn-wrap
+                +b.BUTTON.calc-btn._c_yellow +
+            +b.calc-btn-wrap
+                +b.BUTTON.calc-btn 7
+            +b.calc-btn-wrap
+                +b.BUTTON.calc-btn 8
+            +b.calc-btn-wrap
+                +b.BUTTON.calc-btn 9
+            +b.calc-btn-wrap
+                +b.BUTTON.calc-btn._c_yellow -
+            +b.calc-btn-wrap
+                +b.BUTTON.calc-btn 4
+            +b.calc-btn-wrap
+                +b.BUTTON.calc-btn 5
+            +b.calc-btn-wrap
+                +b.BUTTON.calc-btn 6
+            +b.calc-btn-wrap
+                +b.BUTTON.calc-btn._c_yellow *
+            +b.calc-btn-wrap
+                +b.BUTTON.calc-btn 1
+            +b.calc-btn-wrap
+                +b.BUTTON.calc-btn 2
+            +b.calc-btn-wrap
+                +b.BUTTON.calc-btn 3
+            +b.calc-btn-wrap
+                +b.BUTTON.calc-btn._c_yellow /
+            +b.calc-btn-wrap
+                +b.BUTTON.calc-btn 0
+            +b.calc-btn-wrap
+                +b.BUTTON.calc-btn .
+            +b.calc-btn-wrap
+                +b.BUTTON.calc-btn._c_pink._s_wide =
+
+
+
