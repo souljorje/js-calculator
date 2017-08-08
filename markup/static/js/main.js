@@ -1,5 +1,8 @@
-'use strict';
+import $ from 'jquery'
 
-/*
-    This file can be used as entry point for webpack!
- */
+$('.calc-btn-wrap').on('mousedown', function() {
+    $(this).addClass('calc-btn-wrap_toggle');
+})
+$('.calc-btn-wrap').on('mouseup', function() {
+    $(this).removeClass('calc-btn-wrap_toggle');
+})
