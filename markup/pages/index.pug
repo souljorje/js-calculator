@@ -2,14 +2,16 @@ extends _template.pug
 
 block body
     +b.calculator
-        +e.screen
+        +e.screen-holder
+            +e.supscreen lorem
+            +e.screen
         +e.buttons
             +b.calc-btn-wrap
                 +b.BUTTON.calc-btn._c_pink._s_wide C
             +b.calc-btn-wrap._disabled
                 +b.BUTTON.calc-btn(disabled) ∞
             +b.calc-btn-wrap
-                +b.BUTTON.calc-btn._c_yellow(value='+') +
+                +b.BUTTON.calc-btn._c_yellow(data-oper='+') +
             +b.calc-btn-wrap
                 +b.BUTTON.calc-btn(value='7') 7
             +b.calc-btn-wrap
@@ -17,7 +19,7 @@ block body
             +b.calc-btn-wrap
                 +b.BUTTON.calc-btn(value='9') 9
             +b.calc-btn-wrap
-                +b.BUTTON.calc-btn._c_yellow(value='-') -
+                +b.BUTTON.calc-btn._c_yellow(data-oper='-') -
             +b.calc-btn-wrap
                 +b.BUTTON.calc-btn(value='4') 4
             +b.calc-btn-wrap
@@ -25,7 +27,7 @@ block body
             +b.calc-btn-wrap
                 +b.BUTTON.calc-btn(value='6') 6
             +b.calc-btn-wrap
-                +b.BUTTON.calc-btn._c_yellow(value='*') *
+                +b.BUTTON.calc-btn._c_yellow(data-oper='*') *
             +b.calc-btn-wrap
                 +b.BUTTON.calc-btn(value='1') 1
             +b.calc-btn-wrap
@@ -33,13 +35,13 @@ block body
             +b.calc-btn-wrap
                 +b.BUTTON.calc-btn(value='3') 3
             +b.calc-btn-wrap
-                +b.BUTTON.calc-btn._c_yellow(value='/') /
+                +b.BUTTON.calc-btn._c_yellow(data-oper='/') /
             +b.calc-btn-wrap
                 +b.BUTTON.calc-btn(value='0') 0
             +b.calc-btn-wrap
                 +b.BUTTON.calc-btn(value='.') .
             +b.calc-btn-wrap
-                +b.BUTTON.calc-btn._c_pink._s_wide(value='=') =
+                +b.BUTTON.calc-btn._c_pink._s_wide(data-oper='=') =
 
 
 

@@ -21,7 +21,7 @@ $(function() {
           display.textContent = display.textContent.slice(1, display.textContent.length);
         }
 
-        if (display.textContent.length >= 16 || /\d+\.\d+\./g.test(display.textContent)) {
+        if (display.textContent.length >= 17 || /\d+\.\d+\./g.test(display.textContent)) {
           display.textContent = display.textContent.slice(0, display.textContent.length-1)
         }
 
