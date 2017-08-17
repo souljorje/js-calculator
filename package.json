@@ -5,7 +5,8 @@
   "main": "gulpfile.js",
   "directories": {},
   "dependencies": {
-    "babel-preset-es2015": "^6.24.1"
+    "babel-preset-es2015": "^6.24.1",
+    "jquery": "^3.2.1"
   },
   "devDependencies": {
     "bemto.pug": "^2.1.0",
