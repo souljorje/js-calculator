@@ -18,21 +18,32 @@ body
     font-family 'Bender'
     &__screen-holder
         position relative
+        padding 0 5px 5px
+        border 4px solid #000
+        box-shadow inset 0px 0px 10px #000
+        margin-bottom 20px
     &__supscreen
+        max-width calc(100% - 10px)
         position absolute
         top 10px
-        right 10px
+        right 5px
+        white-space nowrap
+        overflow-x scroll
+        &::-webkit-scrollbar-track
+            background-color transparent
+        &::-webkit-scrollbar
+            height 10px
+            background-color transparent
+        &::-webkit-scrollbar-thumb
+            border-radius 10px
+            background-color lightness(#aaa, 90%)
     &__screen
         display flex
         align-items flex-end
         justify-content flex-end
-        padding 0 5px 5px
-        height 70px
-        margin-bottom 20px
-        border 4px solid #000
-        box-shadow inset 0px 0px 10px #000
+        height 80px
         text-align right
-        font-size 36px
+        font-size 24px
     &__buttons
         display flex
         flex-wrap wrap
