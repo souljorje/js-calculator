@@ -9,172 +9,168 @@ $(window).on('mouseup', function() {
 
 $(function() {
   var display = document.querySelector('.calculator__screen'),
-      subdisplay = document.querySelector('.calculator__supscreen'),
+      subDisplay = document.querySelector('.calculator__supscreen'),
+      res = '',
+      hist = [];
+
+
+  $('.calc-btn').on('click', function() {
+
+    // Clear display after equals sign pressed
+    if (res == '') {
+      display.textContent = ''
+    }
+
+    $("[data-oper='.']").removeAttr('disabled', 'disabled');
+
+    subDisplay.textContent += $(this).val() || $(this).data('oper'); // Small display
+
+    res += $(this).val() || $(this).data('oper'); // Expression of two operands and operator
+
+    // Count result if there is only one operand
+    if ($(this).data('oper')=='=' && /^\d+\=$/g.test(res)) {
+      display.textContent = res.slice(0, res.length - 1);
+      subDisplay.textContent += res.slice(0, res.length - 1);
+      hist.push(subDisplay.textContent);
+      subDisplay.textContent = '';
       res = '';
+    }
 
-      $('.calc-btn').on('click', function() {
+    // Count result if there is only one operand and operator
+    if ($(this).data('oper')=='=' && /^\d+(\*|\/|\-|\+)\=$/g.test(res)) {
+      display.textContent = res.slice(0, res.length - 2);
+      subDisplay.textContent = subDisplay.textContent.slice(0, subDisplay.textContent.length - 2) + $(this).data('oper') + res.slice(0, res.length - 2);
+      hist.push(subDisplay.textContent);
+      subDisplay.textContent = '';
+      res = '';
+    }
 
-        if ($(this).data('oper')) {
-          display.textContent = ''
+    console.log('hist: ', hist)
+
+    // Block dot if expression goes like: operator + operand + operator + operand
+    if(/^(\-?(?:\d*\.)?\d+(\*|\/|\-|\+)(?:\d*\.)?\d+)(\*|\/|\-|\+|\=)$/g.test(res)) {
+      $("[data-oper='.']").attr('disabled', 'disabled');
+    }
+
+    // Clear screen after result of expression
+    if (/^((?:\d*\.)?\d+(\*|\/|\-|\+)(?:\d*\.)?\d{1})$/g.test(res) && res[res.length - 2]!=='.') {
+      display.textContent = ''
+    }
+
+    display.textContent += $(this).val(); // Main display
+
+    // 'C' button
+    if ($(this).val()=='C') {
+      res = '',
+      display.textContent = '',
+      subDisplay.textContent = '';
+    }
+
+    // Set maximum digit length and prohibit digits like 1.2.3
+    if (/^(\d+\.\d+){16}$|(\d+){17}/g.test(subDisplay.textContent) || /\d+\.\d+\./g.test(subDisplay.textContent)) {
+      subDisplay.textContent = subDisplay.textContent.slice(0, subDisplay.textContent.length - 1);
+      display.textContent = display.textContent.slice(0, display.textContent.length-1);
+      res = res.slice(0, res.length-1);
+    }
+
+    // Toggle dot on main screen depending on operator or dot on subscreen
+    if(/(\*|\/|\-|\+|\.){2,}/g.test(subDisplay.textContent) && /^\d+\.$/g.test(display.textContent)) {
+      display.textContent = display.textContent.slice(0, display.textContent.length-1) + $(this).val();
+    }
+
+    // Check if there is more than 1 operator or dot at row and cut it
+    if(/(\*|\/|\-|\+|\.){2,}/g.test(subDisplay.textContent)) {
+      subDisplay.textContent = subDisplay.textContent.slice(0, subDisplay.textContent.length-2) + $(this).data('oper') || '.';
+      res = res.slice(0, res.length-2) + $(this).data('oper') || '.';
+    }
+
+    // Check if operator or dot is first char and cut it
+    if (subDisplay.textContent.indexOf('+')==0 || subDisplay.textContent.indexOf('-')==0 || subDisplay.textContent.indexOf('*')==0 || subDisplay.textContent.indexOf('/')==0 || subDisplay.textContent.indexOf('.')==0) {
+      subDisplay.textContent = subDisplay.textContent.slice(1, subDisplay.textContent.length);
+      res = res.slice(1, res.length);
+      display.textContent = display.textContent.slice(1, res.length);
+    }
+
+    // Clear display after equals sign pressed
+    if ( /\d+\.\d+\./g.test(display.textContent) || /\.{2,}/g.test(display.textContent)) {
+      display.textContent = display.textContent.slice(0, display.textContent.length-1)
+    }
+
+    console.log('res: ', res);
+    console.log('exp: ', subDisplay.textContent);
+    console.log('display: ', display.textContent);
+
+    if (checkIndex(res)>0) {
+
+      var middleIndex = checkIndex(res),  //Find index of operator in expression
+          operand = res[middleIndex],     //Find an operator
+          rightSearch = middleIndex + 1,     //Define right part of expression
+          right = '';
+
+        //Parse right part of expression
+        while (rightSearch < res.length - 1) {
+          right = right + res[rightSearch];
+          rightSearch++;
         }
 
-        // Clear screen after result
-        if ((display.textContent == res) || subdisplay.textContent[subdisplay.textContent.length-1]=='+' || subdisplay.textContent[subdisplay.textContent.length-1]=='-' || subdisplay.textContent[subdisplay.textContent.length-1]=='*' || subdisplay.textContent[subdisplay.textContent.length-1]=='/') {
-          display.textContent = ''
+
+      var leftSearch = middleIndex - 1,   //Define left part of expression
+          left = '';
+
+        //Parse left part of expression
+        while (leftSearch >= 0) {
+          left = res[leftSearch] + left;
+          leftSearch--;
         }
+        console.log('left: ', left);
+        console.log('right: ', right);
 
-        display.textContent += $(this).val();
+      // Count an expression depending on operator
+      switch (operand) {
 
-        subdisplay.textContent += $(this).val() || $(this).data('oper');
+        case '+':
 
-        res += $(this).val() || $(this).data('oper');
-
-        // cutres = res.slice(0, res.length - 1);
-
-        // subdisplay.textContent = exp
-
-        // console.log('cutres: ', cutres);
-
-
-        if (/\d{17}/g.test(subdisplay.textContent)||/((?:\d\.)?\d){16,}/g.test(subdisplay.textContent)||/\d+\.\d+\./g.test(subdisplay.textContent)) {
-          subdisplay.textContent = subdisplay.textContent.slice(0, subdisplay.textContent.length - 1)
-        }
-
-        // Check if there is more than 1 operator or dot at row and cut it
-        if(/(\*|\/|\-|\+|\.){2,}/g.test(subdisplay.textContent)) {
-          subdisplay.textContent = subdisplay.textContent.slice(0, subdisplay.textContent.length-2) + $(this).data('oper');
-          res = res.slice(0, res.length-2) + $(this).data('oper');
-        }
-        //Check if operator or dot is first char and cut it, except single '-'
-        if (subdisplay.textContent.indexOf('+')==0 || subdisplay.textContent.indexOf('*')==0 || subdisplay.textContent.indexOf('/')==0 || subdisplay.textContent.indexOf('.')==0 || /\-{2,}/g.test(subdisplay.textContent)) {
-          subdisplay.textContent = subdisplay.textContent.slice(1, subdisplay.textContent.length);
-        }
-
-        if (display.textContent.length >= 17 || /\d+\.\d+\./g.test(display.textContent)) {
-          display.textContent = display.textContent.slice(0, display.textContent.length-1)
-        }
-
-        console.log('res: ', res);
-        console.log('exp: ', subdisplay.textContent);
-        console.log('display: ', display.textContent);
-
-        if (checkIndex(res)>0) {
-
-          var middleIndex = checkIndex(res),  //Find index of operator in expression
-              operand = res[middleIndex],     //Find an operator
-              rightSearch = middleIndex + 1,     //Define right part of expression
-              right = '';
-
-            //Parse right part of expression
-            while (rightSearch < res.length - 1) {
-              right = right + res[rightSearch];
-              rightSearch++;
-            }
-
-
-          var leftSearch = middleIndex - 1,   //Define left part of expression
-              left = '';
-
-            //Parse left part of expression
-            while (leftSearch >= 0) {
-              left = res[leftSearch] + left;
-              leftSearch--;
-            }
-
-          // Count an expression depending on operator
-          switch (operand) {
-
-            case '+':
-              if(+left>0&&+left<1&&+right>0&&+right<1) {
-
-                res = dotNumbers(+left, +right);
-
-              }
-              else res = +left + +right;
-              break;
-
-            case '-':
-              res = +left - +right;
-              break;
-            case '*':
-              res = +left * +right;
-              break;
-
-            case '/':
-              res = +left / +right;
-              break;
+          if(+left>0&&+left<1&&+right>0&&+right<1) {
+            res = dotNumbers(+left, +right);
           }
-          display.textContent = res;
-          res += $(this).data('oper');
-        }
-      });
+          else res = +left + +right;
+          break;
+
+        case '-':
+          res = +left - +right;
+          break;
+
+        case '*':
+          res = +left * +right;
+          break;
+
+        case '/':
+          res = +left / +right;
+          break;
+      }
+
+      if (res == Infinity || isNaN(res)) {
+        display.textContent = 'Don\'t divide by zero!';
+        res = '';
+        subDisplay.textContent = ''
+      }
+
+      else if ($(this).data('oper')=='=') {
+        display.textContent = res;
+        subDisplay.textContent += String(res)
+        hist.push(subDisplay.textContent);
+        subDisplay.textContent = '';
+        res = ''
+      }
+
+      else {
+        display.textContent = res;
+        res += $(this).data('oper');
+      }
+      console.log('hist: ', hist)
+    }
+  });
 }($));
-
-// $('.calc-btn').on('click', function() {
-
-//   str = '';
-
-//   while(checkIndex(str)<0) {
-
-//     str+=prompt('test', '');
-
-//     // Check if there is more than 1 operator at row and cut it
-//     if (/(\*{2,}|\/{2,}|\-{2,}|\+{2,})/g.test(str)) {
-//       str = str.slice(0, str.length-1);
-//     }
-
-//     //Check if operator is first char and cut it, except one '-'
-//     if (str.indexOf('+')==0||str.indexOf('*')==0||str.indexOf('/')==0 || /\-{2,}/g.test(str)) {
-//       str = str.slice(1, str.length);
-//     }
-
-//   }
-
-
-  // var middleIndex = checkIndex(str),  //Find index of operator in expression
-  //     operand = str[middleIndex],     //Find an operator
-  //     rightSearch = middleIndex + 1,  //Define right part of expression
-  //     right = '';
-
-  //   //Parse right part of expression
-  //   while (rightSearch < str.length) {
-  //     right = right + str[rightSearch];
-  //     rightSearch++;
-  //   }
-
-
-  // var leftSearch = middleIndex - 1,   //Define left part of expression
-  //     left = '';
-
-  //   //Parse left part of expression
-  //   while (leftSearch >= 0) {
-  //     left = str[leftSearch] + left;
-  //     leftSearch--;
-  //   }
-
-  // // Count an expression depending on operator
-  // switch (operand) {
-
-  //   case '+':
-  //     if(+left>0&&+left<1&&+right>0&&+right<1) {
-
-  //       return dotNumbers(+left, +right);
-
-  //     }
-  //     else return +left + +right;
-
-  //   case '-':
-  //     return +left - +right;
-
-  //   case '*':
-  //     return +left * +right;
-
-  //   case '/':
-  //     return +left / +right;
-  // }
-
-// });
-
 
 function checkIndex (str) {
 
@@ -184,8 +180,8 @@ function checkIndex (str) {
 
   for (let i = 0; i < str.length; i++) {
     //Check if expression pass regexp: +/- number or fraction, operator, number or fraction
-    if (str.match(/(\-?(?:\d*\.)?\d+(\*|\/|\-|\+)(?:\d*\.)?\d+)(\*|\/|\-|\+)/g)) {
-     foundExp = str.match(/(\-?(?:\d*\.)?\d+(\*|\/|\-|\+)(?:\d*\.)?\d+)/g)[0];
+    if (str.match(/(\-?(?:\d*\.)?\d+(\*|\/|\-|\+)(?:\d*\.)?\d+)(\*|\/|\-|\+|\=)/)) {
+     foundExp = str.match(/(\-?(?:\d*\.)?\d+(\*|\/|\-|\+)(?:\d*\.)?\d+)/)[0];
     }
   }
   if (foundExp) {
@@ -203,11 +199,11 @@ function checkIndex (str) {
 // Count fractions: 0.1 - 0.9
 
 function dotNumbers (a, b) {
-  var aLength = String(a).length - 2;
-  var bLength = String(b).length - 2;
-  var mutator = 10;
-  var aDividor = 1;
-  var bDividor = 1;
+  var aLength = String(a).length - 2,
+      bLength = String(b).length - 2,
+      mutator = 10,
+      aDividor = 1,
+      bDividor = 1;
 
   for (var i = 0; i < aLength; i++) {
     aDividor*=mutator;
@@ -218,9 +214,9 @@ function dotNumbers (a, b) {
   }
 
   if (aDividor > bDividor) {
-
     return (a*aDividor + b*aDividor ) / aDividor
   }
+
   else {
     return (a*bDividor + b*bDividor ) / bDividor
   }

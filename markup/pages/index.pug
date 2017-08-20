@@ -3,11 +3,11 @@ extends _template.pug
 block body
     +b.calculator
         +e.screen-holder
-            +e.supscreen
-            +e.screen
+            +e.SPAN.supscreen
+            +e.SPAN.screen
         +e.buttons
             +b.calc-btn-wrap
-                +b.BUTTON.calc-btn._c_pink._s_wide C
+                +b.BUTTON.calc-btn._c_pink._s_wide(value = 'C') C
             +b.calc-btn-wrap._disabled
                 +b.BUTTON.calc-btn(disabled) ∞
             +b.calc-btn-wrap
@@ -39,7 +39,7 @@ block body
             +b.calc-btn-wrap
                 +b.BUTTON.calc-btn(value='0') 0
             +b.calc-btn-wrap
-                +b.BUTTON.calc-btn(value='.') .
+                +b.BUTTON.calc-btn(value='.' data-oper='.') .
             +b.calc-btn-wrap
                 +b.BUTTON.calc-btn._c_pink._s_wide(data-oper='=') =
 
