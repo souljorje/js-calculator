@@ -10,34 +10,16 @@ $(window).on('mouseup', function() {
 $(function() {
   var display = document.querySelector('.calculator__screen'),
       subdisplay = document.querySelector('.calculator__supscreen'),
-      res = '',
-      cutres = '';
-
-      $('[data-oper]').on('click', function() {
-        $('[data-oper]').removeAttr('disabled', '');
-        $(this).attr('disabled', '');
-      })
+      res = '';
 
       $('.calc-btn').on('click', function() {
 
         if ($(this).data('oper')) {
-          res += display.textContent + $(this).data('oper');
+          display.textContent = ''
         }
 
-        // if ($(this).data('oper')&&/\d(\*|\/|\-|\+|\.)/g.test(res)) {
-        //   res = display.textContent + $(this).data('oper')
-        // }
-
-        // if (/(\-?(?:\d*\.)?\d+(\*|\/|\-|\+)(?:\d*\.)?\d+)/g.test(res)) {
-
-        // }
-
-        // if(/(\*|\/|\-|\+|\.){2,}/g.test(res)) {
-
-        // }
-
         // Clear screen after result
-        if ((display.textContent == cutres) || subdisplay.textContent[subdisplay.textContent.length-1]=='+' || subdisplay.textContent[subdisplay.textContent.length-1]=='-' || subdisplay.textContent[subdisplay.textContent.length-1]=='*' || subdisplay.textContent[subdisplay.textContent.length-1]=='/') {
+        if ((display.textContent == res) || subdisplay.textContent[subdisplay.textContent.length-1]=='+' || subdisplay.textContent[subdisplay.textContent.length-1]=='-' || subdisplay.textContent[subdisplay.textContent.length-1]=='*' || subdisplay.textContent[subdisplay.textContent.length-1]=='/') {
           display.textContent = ''
         }
 
@@ -45,14 +27,13 @@ $(function() {
 
         subdisplay.textContent += $(this).val() || $(this).data('oper');
 
-        cutres = res.slice(0, res.length - 1);
+        res += $(this).val() || $(this).data('oper');
+
+        // cutres = res.slice(0, res.length - 1);
 
         // subdisplay.textContent = exp
 
-        console.log('res: ', res);
-        console.log('exp: ', subdisplay.textContent);
-        console.log('cutres: ', cutres);
-        console.log('display: ', display.textContent);
+        // console.log('cutres: ', cutres);
 
 
         if (/\d{17}/g.test(subdisplay.textContent)||/((?:\d\.)?\d){16,}/g.test(subdisplay.textContent)||/\d+\.\d+\./g.test(subdisplay.textContent)) {
@@ -73,16 +54,20 @@ $(function() {
           display.textContent = display.textContent.slice(0, display.textContent.length-1)
         }
 
-        else if (checkIndex(cutres)>0) {
+        console.log('res: ', res);
+        console.log('exp: ', subdisplay.textContent);
+        console.log('display: ', display.textContent);
 
-          var middleIndex = checkIndex(cutres),  //Find index of operator in expression
-              operand = cutres[middleIndex],     //Find an operator
+        if (checkIndex(res)>0) {
+
+          var middleIndex = checkIndex(res),  //Find index of operator in expression
+              operand = res[middleIndex],     //Find an operator
               rightSearch = middleIndex + 1,     //Define right part of expression
               right = '';
 
             //Parse right part of expression
-            while (rightSearch < cutres.length) {
-              right = right + cutres[rightSearch];
+            while (rightSearch < res.length - 1) {
+              right = right + res[rightSearch];
               rightSearch++;
             }
 
@@ -92,7 +77,7 @@ $(function() {
 
             //Parse left part of expression
             while (leftSearch >= 0) {
-              left = cutres[leftSearch] + left;
+              left = res[leftSearch] + left;
               leftSearch--;
             }
 
@@ -102,25 +87,25 @@ $(function() {
             case '+':
               if(+left>0&&+left<1&&+right>0&&+right<1) {
 
-                cutres = dotNumbers(+left, +right);
+                res = dotNumbers(+left, +right);
 
               }
-              else cutres = +left + +right;
+              else res = +left + +right;
               break;
 
             case '-':
-              cutres = +left - +right;
+              res = +left - +right;
               break;
             case '*':
-              cutres = +left * +right;
+              res = +left * +right;
               break;
 
             case '/':
-              cutres = +left / +right;
+              res = +left / +right;
               break;
           }
-          display.textContent = cutres;
-          res = String(cutres) + $(this).data('oper');
+          display.textContent = res;
+          res += $(this).data('oper');
         }
       });
 }($));
@@ -199,7 +184,7 @@ function checkIndex (str) {
 
   for (let i = 0; i < str.length; i++) {
     //Check if expression pass regexp: +/- number or fraction, operator, number or fraction
-    if (str.match(/(\-?(?:\d*\.)?\d+(\*|\/|\-|\+)(?:\d*\.)?\d+)/g)) {
+    if (str.match(/(\-?(?:\d*\.)?\d+(\*|\/|\-|\+)(?:\d*\.)?\d+)(\*|\/|\-|\+)/g)) {
      foundExp = str.match(/(\-?(?:\d*\.)?\d+(\*|\/|\-|\+)(?:\d*\.)?\d+)/g)[0];
     }
   }
