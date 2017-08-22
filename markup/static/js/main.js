@@ -3,16 +3,18 @@ import $ from 'jquery'
 $('.calc-btn-wrap').on('mousedown', function() {
     $(this).addClass('calc-btn-wrap_toggle');
 })
+
 $(window).on('mouseup', function() {
     $('.calc-btn-wrap').removeClass('calc-btn-wrap_toggle');
 })
+
+$('.calculator-supscreen')
 
 $(function() {
   var display = document.querySelector('.calculator__screen'),
       subDisplay = document.querySelector('.calculator__supscreen'),
       res = '',
       hist = [];
-
 
   $('.calc-btn').on('click', function() {
 
@@ -26,6 +28,8 @@ $(function() {
     subDisplay.textContent += $(this).val() || $(this).data('oper'); // Small display
 
     res += $(this).val() || $(this).data('oper'); // Expression of two operands and operator
+
+    subDisplay.scrollLeft = subDisplay.scrollWidth + 20 //Scroll subdisplay to right automatically
 
     // Count result if there is only one operand
     if ($(this).data('oper')=='=' && /^\d+\=$/g.test(res)) {
