@@ -67,11 +67,6 @@ $(function() {
 
     console.log('hist: ', hist)
 
-    // Block dot if expression goes like: operator + operand + operator + operand
-    if(/^(\-?(?:\d*\.)?\d+(\*|\/|\-|\+)(?:\d*\.)?\d+)(\*|\/|\-|\+|\=)$/g.test(res)) {
-      $("[data-oper='.']").attr('disabled', 'disabled');
-    }
-
     // Clear screen after result of expression
     if (/^((?:\d*\.)?\d+(\*|\/|\-|\+)(?:\d*\.)?\d{1})$/g.test(res) && res[res.length - 2]!=='.') {
       display.textContent = ''
@@ -102,6 +97,11 @@ $(function() {
     if(/(\*|\/|\-|\+|\.){2,}/g.test(subDisplay.textContent)) {
       subDisplay.textContent = subDisplay.textContent.slice(0, subDisplay.textContent.length-2) + $(this).data('oper') || '.';
       res = res.slice(0, res.length-2) + $(this).data('oper') || '.';
+    }
+
+    // Block dot if expression goes like: operator + operand + operator + operand
+    if(/^(\-?(?:\d*\.)?\d+(\*|\/|\-|\+)(?:\d*\.)?\d+)(\*|\/|\-|\+|\=)$/g.test(res)) {
+      $("[data-oper='.']").attr('disabled', 'disabled');
     }
 
     // Check if operator or dot is first char and cut it
