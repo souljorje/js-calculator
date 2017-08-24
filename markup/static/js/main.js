@@ -8,15 +8,29 @@ $(window).on('mouseup', function() {
     $('.calc-btn-wrap').removeClass('calc-btn-wrap_toggle');
 })
 
-$('.calculator-supscreen')
+
+// Add item to history
+function addExp(display, hist) {
+  display.empty().each(function(i) {
+    for (var x = 0; x < hist.length; x++){
+      $(this).append('<div class="calculator__history-item"><span>' + (x+1 + '.') + '</span>' + hist[x] + '</div>');
+    }
+  });
+}
 
 $(function() {
   var display = document.querySelector('.calculator__screen'),
       subDisplay = document.querySelector('.calculator__supscreen'),
+      histDisplay = $('.calculator__history'),
       res = '',
       hist = [];
 
   $('.calc-btn').on('click', function() {
+
+    // Clear display after result with 'e+'
+    if (subDisplay.textContent == 'This is the limit') {
+      subDisplay.textContent = ''
+    }
 
     // Clear display after equals sign pressed
     if (res == '') {
@@ -38,6 +52,7 @@ $(function() {
       hist.push(subDisplay.textContent);
       subDisplay.textContent = '';
       res = '';
+      addExp(histDisplay, hist);
     }
 
     // Count result if there is only one operand and operator
@@ -47,6 +62,7 @@ $(function() {
       hist.push(subDisplay.textContent);
       subDisplay.textContent = '';
       res = '';
+      addExp(histDisplay, hist);
     }
 
     console.log('hist: ', hist)
@@ -89,7 +105,7 @@ $(function() {
     }
 
     // Check if operator or dot is first char and cut it
-    if (subDisplay.textContent.indexOf('+')==0 || subDisplay.textContent.indexOf('-')==0 || subDisplay.textContent.indexOf('*')==0 || subDisplay.textContent.indexOf('/')==0 || subDisplay.textContent.indexOf('.')==0) {
+    if (subDisplay.textContent.indexOf('+')==0 || subDisplay.textContent.indexOf('-')==0 || subDisplay.textContent.indexOf('*')==0 || subDisplay.textContent.indexOf('/')==0 || subDisplay.textContent.indexOf('.')==0 || subDisplay.textContent.indexOf('=')==0) {
       subDisplay.textContent = subDisplay.textContent.slice(1, subDisplay.textContent.length);
       res = res.slice(1, res.length);
       display.textContent = display.textContent.slice(1, res.length);
@@ -164,17 +180,26 @@ $(function() {
         subDisplay.textContent += String(res)
         hist.push(subDisplay.textContent);
         subDisplay.textContent = '';
-        res = ''
+        res = '';
+        addExp(histDisplay, hist);
       }
 
       else {
         display.textContent = res;
         res += $(this).data('oper');
       }
+
+      if (res.indexOf('e')>-1) {
+        display.textContent = res.slice(0, res.length - 1);
+        res = '';
+        subDisplay.textContent = 'This is the limit'
+      }
       console.log('hist: ', hist)
     }
   });
 }($));
+
+
 
 function checkIndex (str) {
 
