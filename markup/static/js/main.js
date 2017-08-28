@@ -1,16 +1,20 @@
 "use strict"
 
-import $ from 'jquery'
+const btnWrap = document.querySelectorAll('.calc-btn-wrap')
 
-$('.calc-btn-wrap').on('mousedown', function() {
-    $(this).addClass('calc-btn-wrap_toggle');
+for(let i = 0; i < btnWrap.length; i++) {
+  btnWrap[i].addEventListener('mousedown', function() {
+    this.classList.add('calc-btn-wrap_toggle');
+  })
+};
+
+window.addEventListener('mouseup', function() {
+  for (let i = 0; i < btnWrap.length; i++) {
+    btnWrap[i].classList.remove('calc-btn-wrap_toggle');
+  }
 })
 
-$(window).on('mouseup', function() {
-    $('.calc-btn-wrap').removeClass('calc-btn-wrap_toggle');
-})
-
-$(function() {
+document.addEventListener("DOMContentLoaded", function(event) {
 
   // Key variables
   const display = document.querySelector('.calculator__screen'); // Screen with result
@@ -26,11 +30,12 @@ $(function() {
   const numDotNumDot = /\d+\.\d+\./;
   const numEqSign = /^\d+\=$/;
   const twoOpers = /(\*|\/|\-|\+|\.){2,}/;
-  const numOper = /(?:\d*\.)?\d+(\*|\/|\-|\+|\=)$/;
+  const operands = ['+', '-', '/', '*'];
 
   const buttons = document.querySelectorAll('.calc-btn');
 
-  for (var i = 0; i < buttons.length; i++) {
+  for (let i = 0; i < buttons.length; i++) {
+
     buttons[i].addEventListener('click', function() {
 
       // Clear display after result with 'e+'
@@ -61,7 +66,6 @@ $(function() {
         addExp(histDisplay, hist);
       }
 
-
       // Count result if there is only one operand and operator
       if ( this.getAttribute('data-oper') === '=' && numOperEqSign.test(res) ) {
         display.textContent = res.slice(0, res.length - 2);
@@ -71,8 +75,6 @@ $(function() {
         res = '';
         addExp(histDisplay, hist);
       }
-
-      console.log('hist: ', hist);
 
       // Clear screen after result of expression
       if ( screenClear.test(res) && res[res.length - 2] !== '.' ) {
@@ -106,11 +108,9 @@ $(function() {
       }
 
       // Block dot if last char is operator
-      if ( numOper.test(res) ) {
+      if ( operands.indexOf(subDisplay.textContent[subDisplay.textContent.length-1]) > -1) {
         document.querySelector('[data-oper="."]').setAttribute("disabled", "disabled");
       }
-
-      // console.log(numOper.test(res));
 
       // Check if operator or dot is first char and cut it
       if ( subDisplay.textContent.indexOf(this.getAttribute('data-oper')) === 0 ) {
@@ -123,10 +123,6 @@ $(function() {
       if ( numDotNumDot.test(display.textContent) || /\.{2,}/.test(display.textContent) ) {
         display.textContent = display.textContent.slice(0, display.textContent.length-1);
       }
-
-      console.log('res: ', res);
-      console.log('exp: ', subDisplay.textContent);
-      console.log('display: ', display.textContent);
 
       if ( checkIndex(res)>0 ) {
 
@@ -141,7 +137,6 @@ $(function() {
             rightSearch++;
           }
 
-
         let leftSearch = middleIndex - 1,   //Define left part of expression
             left = '';
 
@@ -150,9 +145,6 @@ $(function() {
             left = res[leftSearch] + left;
             leftSearch--;
           }
-
-          console.log('left: ', left);
-          console.log('right: ', right);
 
         // Count an expression depending on operator
         switch ( operand ) {
@@ -203,24 +195,26 @@ $(function() {
           res = '';
           subDisplay.textContent = 'This is the limit';
         }
-        console.log('hist: ', hist);
       }
     });
   }
-}($));
+});
 
 
 
 function checkIndex (str) {
 
-  let operands = ['+', '-', '/', '*'],
-      foundExp, // Expression
+  const operands = ['+', '-', '/', '*'];
+  let foundExp, // Expression
       foundIndex; //Index of operator
+  const expExtend = /(\-?(?:\d*\.)?\d+(\*|\/|\-|\+)(?:\d*\.)?\d+)(\*|\/|\-|\+|\=)/;
+  const expFull = /(\-?(?:\d*\.)?\d+(\*|\/|\-|\+)(?:\d*\.)?\d+)/;
+
 
   for ( let i = 0; i < str.length; i++ ) {
     //Check if expression pass regexp: +/- number or fraction, operator, number or fraction
-    if ( str.match(/(\-?(?:\d*\.)?\d+(\*|\/|\-|\+)(?:\d*\.)?\d+)(\*|\/|\-|\+|\=)/) ) {
-     foundExp = str.match(/(\-?(?:\d*\.)?\d+(\*|\/|\-|\+)(?:\d*\.)?\d+)/)[0];
+    if ( str.match(expExtend) ) {
+     foundExp = str.match(expFull)[0];
     }
   }
   if ( foundExp ) {
@@ -239,9 +233,9 @@ function checkIndex (str) {
 function addExp(screen, hist) {
   screen.innerHTML = '';
   for ( let x = 0; x < hist.length; x++ ) {
-    var item = document.createElement("div");
-    item.className = 'calculator__history-item'
-    item.innerHTML = `<span> ${x+1}.</span>${hist[x]}`
+    let item = document.createElement("div");
+    item.className = 'calculator__history-item';
+    item.innerHTML = `<span> ${x+1}.</span>${hist[x]}`;
     screen.appendChild(item);
   }
 }
