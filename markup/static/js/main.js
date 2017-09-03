@@ -126,10 +126,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
         display.textContent = display.textContent.slice(0, display.textContent.length-1);
       }
 
-      console.log('exp: ', subDisplay.textContent)
-      console.log('display: ', display.textContent)
-      console.log('res: ', res)
-
       if ( checkIndex(res)>0 ) {
 
         let middleIndex = checkIndex(res),  //Find index of operator in expression
@@ -213,13 +209,12 @@ function checkIndex (str) {
   const operands = ['+', '-', '/', '*'];
   let foundExp, // Expression
       foundIndex; //Index of operator
-  const expExtend = /(\-?(?:\d*\.)?\d+(\*|\/|\-|\+)(?:\d*\.)?\d+)(\*|\/|\-|\+|\=)/g;
-  const expFull = /(\-?(?:\d*\.)?\d+(\*|\/|\-|\+)(?:\d*\.)?\d+)/g;
+  const expExtend = /(\-?(?:\d*\.)?\d+(\*|\/|\-|\+)(?:\d*\.)?\d+)(\*|\/|\-|\+|\=)/;
+  const expFull = /(\-?(?:\d*\.)?\d+(\*|\/|\-|\+)(?:\d*\.)?\d+)/;
 
   for ( let i = 0; i < str.length; i++ ) {
     //Check if expression pass regexp: number or fraction, operator, number or fraction
     if ( str.match(expExtend) ) {
-      console.log(expExtend.test(str))
      foundExp = str.match(expFull)[0];
     }
   }
@@ -227,7 +222,7 @@ function checkIndex (str) {
     //Check if char in expression is operator and find its index
     for( let j = 0; j < foundExp.length; j++ ) {
       if ( operands.indexOf(foundExp[j]) > -1 ) {
-        foundIndex = foundExp.lastIndexOf(foundExp[j]);
+        foundIndex = foundExp.lastIndexOf(foundExp[j]); // lastIndexOf because of minus
       }
     }
   }
