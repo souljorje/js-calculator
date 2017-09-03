@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
   // Regexp's
   const numOperEqSign = /^\d+(\*|\/|\-|\+)\=$/;
-  const screenClear = /^((?:\d*\.)?\d+(\*|\/|\-|\+)(?:\d*\.)?\d{1})$/;
+  const screenClear = /^(\-?(?:\d*\.)?\d+(\*|\/|\-|\+)(?:\d*\.)?\d{1})$/;
   const numLength = /^(\d+\.\d+){16}$|(\d+){17}/;
   const numDotNumDot = /\d+\.\d+\./;
   const numEqSign = /^\d+\=$/;
@@ -126,6 +126,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
         display.textContent = display.textContent.slice(0, display.textContent.length-1);
       }
 
+      console.log('exp: ', subDisplay.textContent)
+      console.log('display: ', display.textContent)
+      console.log('res: ', res)
+
       if ( checkIndex(res)>0 ) {
 
         let middleIndex = checkIndex(res),  //Find index of operator in expression
@@ -209,13 +213,13 @@ function checkIndex (str) {
   const operands = ['+', '-', '/', '*'];
   let foundExp, // Expression
       foundIndex; //Index of operator
-  const expExtend = /(\-?(?:\d*\.)?\d+(\*|\/|\-|\+)(?:\d*\.)?\d+)(\*|\/|\-|\+|\=)/;
-  const expFull = /(\-?(?:\d*\.)?\d+(\*|\/|\-|\+)(?:\d*\.)?\d+)/;
-
+  const expExtend = /(\-?(?:\d*\.)?\d+(\*|\/|\-|\+)(?:\d*\.)?\d+)(\*|\/|\-|\+|\=)/g;
+  const expFull = /(\-?(?:\d*\.)?\d+(\*|\/|\-|\+)(?:\d*\.)?\d+)/g;
 
   for ( let i = 0; i < str.length; i++ ) {
-    //Check if expression pass regexp: +/- number or fraction, operator, number or fraction
+    //Check if expression pass regexp: number or fraction, operator, number or fraction
     if ( str.match(expExtend) ) {
+      console.log(expExtend.test(str))
      foundExp = str.match(expFull)[0];
     }
   }
@@ -223,12 +227,31 @@ function checkIndex (str) {
     //Check if char in expression is operator and find its index
     for( let j = 0; j < foundExp.length; j++ ) {
       if ( operands.indexOf(foundExp[j]) > -1 ) {
-        foundIndex = foundExp.indexOf(foundExp[j]);
+        foundIndex = foundExp.lastIndexOf(foundExp[j]);
       }
     }
   }
 
   return foundIndex || -1;
+}
+
+// Count fractions: 0.1 – 0.9
+function dotNumbers (a, b) {
+  let aLength = String(a).length - 2,
+      bLength = String(b).length - 2,
+      mutator = 10,
+      aDividor = 1,
+      bDividor = 1;
+
+  for ( let i = 0; i < aLength; i++ ) {
+    aDividor *= mutator;
+  };
+
+  for ( let j = 0; j < bLength; j++ ) {
+    bDividor *= mutator;
+  }
+
+  return ( aDividor > bDividor ) ? ( a * aDividor + b * aDividor ) / aDividor : ( a * bDividor + b * bDividor ) / bDividor;
 }
 
 // Add item to history
@@ -240,24 +263,4 @@ function addExp(screen, hist) {
     item.innerHTML = `<span> ${x+1}.</span>${hist[x]}`;
     screen.appendChild(item);
   }
-}
-
-// Count fractions: 0.1 - 0.9
-
-function dotNumbers (a, b) {
-  let aLength = String(a).length - 2,
-      bLength = String(b).length - 2,
-      mutator = 10,
-      aDividor = 1,
-      bDividor = 1;
-
-  for ( let i = 0; i < aLength; i++ ) {
-    aDividor*=mutator;
-  };
-
-  for ( let j = 0; j < bLength; j++ ) {
-    bDividor*=mutator;
-  }
-
-  return ( aDividor > bDividor ) ? ( a*aDividor + b*aDividor ) / aDividor : ( a*bDividor + b*bDividor ) / bDividor;
 }
