@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
   // Key variables
   const display = document.querySelector('.calculator__screen'); // Screen with result
-  const subDisplay = document.querySelector('.calculator__supscreen'); // Small display with current calculation
+  const subDisplay = document.querySelector('.calculator__subscreen'); // Small display with current calculation
   const histDisplay = document.querySelector('.calculator__history'); // Display with history of calculations
   const hist = []; // Array with history of calculations
   let   res = ''; // Calculation result of two numbers
@@ -30,10 +30,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
   const numDotNumDot = /\d+\.\d+\./;
   const numEqSign = /^\d+\=$/;
   const twoOpers = /(\*|\/|\-|\+|\.){2,}/;
+
   const operands = ['+', '-', '/', '*'];
 
   const buttons = document.querySelectorAll('.calc-btn');
 
+  // Adding click eventlistner to every button
   for (let i = 0; i < buttons.length; i++) {
 
     buttons[i].addEventListener('click', function() {
@@ -48,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         display.textContent = ''
       }
 
-      document.querySelector('[data-oper="."]').removeAttribute('disabled');
+      document.querySelector('[data-oper="."]').removeAttribute('disabled'); // Switch '.' button back
 
       subDisplay.textContent += this.getAttribute('value') || this.getAttribute('data-oper'); // Small display
 
