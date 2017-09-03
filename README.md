@@ -1,2 +1,3 @@
 Hi!
-Here's my JavaScript calculator
+Here's my pure JavaScript calculator.
+It's well documented and originally styled.
